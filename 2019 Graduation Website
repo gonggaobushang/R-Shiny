@@ -1,3 +1,8 @@
+#格式不规范，并且存在一些小问题，后续改进
+#网址可见：https://xujie.shinyapps.io/financial/
+#服务器为shinyapps.io的免费服务器
+
+
 setwd("")
 rm(list=ls())
 library(shiny)
