@@ -215,3 +215,37 @@ server<-function(input, output) {
   })
 }
 shinyApp(ui,server)
+
+
+
+
+#downloadButton
+ui<-dashboardPage(
+  dashboardHeader(title = "下载数据"),
+  dashboardSidebar(
+    selectInput("dataset", "选择要下载的数据集:", 
+                choices = c("rock", "pressure", "cars")),
+    downloadButton('downloadData', '下载')
+  ),
+  dashboardBody(
+    h2("表格内容："), 
+    fluidRow(width = 8,
+             box(DTOutput("table"))) 
+  )
+)
+server<-function(input, output) {
+  datasetInput <- reactive({
+    switch(input$dataset, #判断，相当于if
+           "rock" = rock,
+           "pressure" = pressure,
+           "cars" = cars)
+  })
+  output$table <- renderDT({
+    datasetInput()
+  })
+  output$downloadData <- downloadHandler( 
+    filename = function() {paste(input$dataset, '.csv', sep='') },
+    content = function(file) {write.csv(datasetInput(), file)}
+  )
+}
+shinyApp(ui,server)
