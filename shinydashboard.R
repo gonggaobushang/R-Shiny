@@ -44,7 +44,6 @@ ui<-dashboardPage(
                  taskItem(value = 80, color = "red",text = "4")
     )
   ),
-  
   dashboardSidebar(),   
   dashboardBody() 
 )
@@ -82,3 +81,106 @@ serve<-function(input, output) {
   })
 }
 shinyApp(ui,serve)
+
+
+
+#sliderInput
+ui<-dashboardPage(
+  dashboardHeader(title = "滑动条传入参数"),
+  dashboardSidebar(
+    sliderInput("integer", "整数：", 
+                min=0, max=1000, value=500), 
+    sliderInput("decimal", "小数：", 
+                min = 0, max = 1, value = 0.5, step= 0.1), 
+    sliderInput("range", "范围：",
+                min = 1, max = 1000, value = c(200,500)), 
+    sliderInput("format", "货币格式:", 
+                min = 0, max = 10000, value = 0, step = 2500, 
+                format="$#,##0", locale="us",  #格式为千分位数字，locale美元
+                animate=TRUE), #设定动画
+    sliderInput("animation", "循环动画", 
+                1, 2000, 1, step = 10, 
+                animate=animationOptions(interval=300, loop=T)) #设定动画选项
+  ),
+  dashboardBody( 
+    fluidRow(
+      box(
+        tableOutput("values"))) #以HTML表格形式输出变量values
+  )
+)
+server<-function(input, output) {
+  # 反应表达式：创建一个数据框，用来存放所有输入值。  
+  sliderValues <- reactive({
+    data.frame(
+      Name = c("整数", "小数","范围", "货币格式","动画"),
+      Value = as.character(c(input$integer, input$decimal,
+                             paste(input$range, collapse=' '),
+                             input$format, input$animation)), 
+      )
+  }) 
+  
+  # 输出组件，新增变量values
+  output$values <- renderTable({ # 以表格的形式输出
+    sliderValues() # 调用反应表达式需要加括号()
+  })
+  
+  sliderValues <- reactive({
+    data.frame(
+      Name = c("整数", "小数","范围", "货币格式","动画"),
+      Value = as.character(c(input$integer, input$decimal,
+                             paste(input$range, collapse=' '),input$format, input$animation)), 
+      stringsAsFactors=FALSE)
+  }) 
+  
+
+  output$values <- renderTable({ 
+    sliderValues() #调用反应表达式需要加括号()
+  })
+}
+shinyApp(ui,server)
+
+
+
+#selectInput
+ui<-dashboardPage(
+  dashboardHeader(title = "写入参数"),
+  dashboardSidebar(
+    selectInput("variable",  
+                "选择变量：", 
+                list("气缸数" = "cyl",  
+                     "变速箱类型" = "am", 
+                     "档位数" = "gear")),
+    checkboxInput("outliers",  
+                  "显示离群值", 
+                  FALSE) , #默认输出FALSE
+    textInput("text",
+              "自定义标题：") 
+  ),
+  dashboardBody(
+    fluidRow(
+      box(
+        plotOutput("mpgPlot"), # 以图片形式输出mpgPlot变量
+        title = h3(textOutput("caption"))),
+      box(
+        title = h3(textOutput("text")))) 
+  )
+)
+mpgData <- mtcars
+mpgData$am <- factor(mpgData$am, labels = c("Automatic", "Manual"))
+server<-function(input, output) {
+  formulaText <- reactive({
+    paste("mpg ~", input$variable)
+  })
+  output$text <- renderText({
+    input$text
+  })
+  output$caption <- renderText({
+    formulaText()
+  })
+  output$mpgPlot <- renderPlot({
+    boxplot(as.formula(formulaText()), #变成公式
+            data = mpgData,
+            outline = input$outliers) #判断：TRUE或者FALSE
+  })
+}
+shinyApp(ui,server)
