@@ -68,7 +68,6 @@ messageData <- data.frame(
   time = c(NA, "13:45", "2014-12-01"),
   stringsAsFactors = FALSE
 )
-
 serve<-function(input, output) {
   output$messageMenu <- renderMenu({ 
     msgs <- apply(messageData, 1, function(row) {
@@ -118,7 +117,6 @@ server<-function(input, output) {
                              input$format, input$animation)), 
       )
   }) 
-  
   # 输出组件，新增变量values
   output$values <- renderTable({ # 以表格的形式输出
     sliderValues() # 调用反应表达式需要加括号()
@@ -131,8 +129,6 @@ server<-function(input, output) {
                              paste(input$range, collapse=' '),input$format, input$animation)), 
       stringsAsFactors=FALSE)
   }) 
-  
-
   output$values <- renderTable({ 
     sliderValues() #调用反应表达式需要加括号()
   })
@@ -181,6 +177,41 @@ server<-function(input, output) {
     boxplot(as.formula(formulaText()), #变成公式
             data = mpgData,
             outline = input$outliers) #判断：TRUE或者FALSE
+  })
+}
+shinyApp(ui,server)
+
+
+
+#fileInput
+library(DT)
+ui<-dashboardPage(
+  dashboardHeader(title = "上传文件"),
+  dashboardSidebar(
+    fileInput('file1', '选择CSV文件', multiple = FALSE, 
+              accept=c('text/csv', 'text/comma-separated-values,text/plain')), 
+    tags$hr(), # 水平线条
+    checkboxInput('header', '第1行为变量名', TRUE),
+    radioButtons('sep', '选择分隔符：',
+                 c("逗号"=',', "分号"=';', "制表符"='\t'), 
+                 selected = ','),
+    radioButtons('quote', '指定引号：',
+                 c("空格"='', "双引号"='"', "单引号"="'"), # 选择范围
+                 selected = ';') #没有匹配的就不选择
+  ),
+  dashboardBody(
+    h2("表格内容："), 
+    fluidRow(width = 8,
+             box(DT::DTOutput("contents"))) # 以DT控件输出
+  )
+)
+server<-function(input, output) {
+  output$contents <- renderDT({ 
+    inFile <- input$file1 # file属性组成的数据框，包括name, size , type, datapath
+    if (is.null(inFile)) # 初始值应该为NULL
+      return(NULL)  # 空则返回NULL
+    # 非空则作为csv文件进行读取
+    read.csv(inFile$datapath, header=input$header, sep=input$sep, quote=input$quote)
   })
 }
 shinyApp(ui,server)
