@@ -372,3 +372,79 @@ server<-function(input, output) {
   
 }
 shinyApp(ui,server)
+
+
+
+
+# tabBox,tagList
+ui<-dashboardPage(
+  dashboardHeader(title = "tabBox"),
+  dashboardSidebar(disable = FALSE), 
+  dashboardBody(
+    fluidRow(
+      tabBox(
+        title = "绘图区域",id = "tabbox1", selected = "Tab1", # 默认显示Tab1
+        width = 8, side = "right", #side表示tablePanel的顺序，right表示反向
+        tabPanel(title = "图1", value = "Tab1", #value与tabBox内的selected匹配
+                 "第1个图的内容", br(), plotOutput("plot1")), # 内容
+        tabPanel(title = "图2", value = "Tab2",
+                 "第2个图的内容", br(), plotOutput("plot2"))
+      ),
+      tabBox(
+        title = "表格区域", id = "tabbox2", selected = "Tab3", 
+        width = 4, side = "left",  # 默认显示左起第3个图表
+        tabPanel(title = "表1", value = "Tab1", 
+                 "第1个表的内容", br(), tableOutput("table1")), 
+        tabPanel(title = "表2", value = "Tab2", 
+                 "第2个表的内容", br(), tableOutput("table2")),
+        tabPanel(title = "表3", value = "Tab3", 
+                 "第3个表的内容", br(), tableOutput("table3"))
+      )
+    ),
+    fluidRow(
+      tabBox(
+        title = tagList(shiny::icon("gear"), "状态区域"),#标题也可以包含icon
+        id = "tabbox3", selected = "Tab1",
+        tabPanel(title = "状态1", value = "Tab1", 
+                 "随便码一行文字:",br(), 
+                 verbatimTextOutput("summary")), # 文本形式输出变量tabset1Selected
+        tabPanel(title = "状态2", value = "Tab2", 
+                 "状态2的内容", br(), verbatimTextOutput("str"))
+      ))
+  )
+)
+
+set.seed(123)
+mydata <- data.frame(abc = sample(letters[1:7], size = 100, replace = TRUE),
+                     ABC = sample(LETTERS[1:7], size = 100, replace = TRUE),
+                     numb1 = rnorm(100),
+                     numb2 = 1:100)
+server<-function(input, output) {
+  output$plot1 <- renderPlot({
+    ggplot(mydata) + 
+      geom_bar(aes(abc, fill = abc)) + 
+      scale_fill_brewer(palette = "Set2") + 
+      theme_classic()
+  })
+  output$plot2 <- renderPlot({
+    ggplot(mydata) + 
+      geom_point(aes(x = numb2, y = numb1), color = "magenta") + 
+      theme_bw()
+  })
+  output$table1 <- renderTable({
+    head(mydata, 6L)
+  })
+  output$table2 <- renderTable({
+    head(mydata[7:12,])
+  })
+  output$table3 <- renderTable({
+    head(mydata[13:18,])
+  })
+  output$summary <- renderPrint({
+    summary(mydata)
+  })
+  output$str <- renderPrint({
+    str(mydata)
+  })
+}
+shinyApp(ui,server)
