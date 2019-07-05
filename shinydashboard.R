@@ -80,6 +80,36 @@ serve<-function(input, output) {
   })
 }
 shinyApp(ui,serve)
+#icon也可以加到sidebar侧边栏中
+ui<-dashboardPage(
+  dashboardHeader(title = "动态侧边栏"),
+  dashboardSidebar(dropdownMenuOutput("myMenu")), # 以下拉菜单形式输出myMenu变量),
+  dashboardBody(
+    tabItems(
+      tabItem(tabName = "dashboard", 
+              h2("1")), 
+      tabItem(tabName = "widgets", 
+              h2("2"))
+    )
+  )
+)
+menudata <- data.frame(
+  text = c("图表页", "小部件页"),
+  tabnames = c("dashboard", "widgets"),
+  iconname = c("dashboard", "th"),
+  stringsAsFactors = FALSE
+)
+server<-function(input, output) {
+  output$myMenu <- renderMenu({ #以menu形式输出
+    mymenu_list <- apply(menudata, 1, function(row){
+      menuItem(text = row[["text"]], 
+               tabName = row[["tabnames"]], 
+               icon = icon(row[["iconname"]]))
+    })
+    sidebarMenu(.list = mymenu_list) 
+  })
+}
+shinyApp(ui,server)
 
 
 
