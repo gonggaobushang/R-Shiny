@@ -249,3 +249,47 @@ server<-function(input, output) {
   )
 }
 shinyApp(ui,server)
+
+
+
+
+
+#submitButton
+ui<-dashboardPage(
+  dashboardHeader(title = "补充上面"),
+  dashboardSidebar(
+    selectInput("dataset", "选择一个数据集:", 
+                choices = c("rock", "pressure", "cars")),
+    numericInput("obs", "输入观测值数量:", 10),
+    helpText("注：表格内只显示指定观测值数量的数据，而概况中包括所有数据"), 
+    #换行符无效，若需要多段文本则增加多个文本部件
+    submitButton("提交")
+  ),
+  dashboardBody(
+    h2("表格内容："), 
+    fluidRow(
+      h4("概况"), 
+      box(width = 11, 
+          verbatimTextOutput("summary"))),# 以文本形式打印summary变量
+    fluidRow(
+      h4("观测值"),
+      box(
+        tableOutput("view"))) # 以表格形式输出view变量 
+  )
+)
+server<-function(input, output) {
+  datasetInput <- reactive({
+    switch(input$dataset, 
+           "rock" = rock, 
+           "pressure" = pressure,
+           "cars" = cars)
+  })
+  output$summary <- renderPrint({
+    dataset <- datasetInput()
+    summary(dataset)
+  })
+  output$view <- renderTable({
+    head(datasetInput(), n = input$obs)
+  })
+}
+shinyApp(ui,server)
