@@ -448,3 +448,66 @@ server<-function(input, output) {
   })
 }
 shinyApp(ui,server)
+
+
+
+
+
+# infoBox,valueBox,actionButton
+ui<- dashboardPage(
+  dashboardHeader(title = "infoBox"),
+  dashboardSidebar(disable = FALSE), 
+  dashboardBody(
+    fluidRow(
+      valueBox(value = 10 * 2, subtitle = "新增用户", icon = icon("credit-card")),
+      #valueBox与infoBox相似只是外表不同
+      infoBox(title = "定单", value = 10 * 2, icon = icon("credit-card")),
+      infoBoxOutput("progressBox"),
+      infoBoxOutput("approvalBox")
+    ),
+    fluidRow(
+      infoBox(title = "定单", value = 10 * 2, 
+              icon = icon("credit-card"), fill = TRUE),
+      infoBoxOutput("progressBox2"),
+      infoBoxOutput("approvalBox2")
+    ),
+    fluidRow(
+      box(width = 4, actionButton("addtion", label = "增加赞", icon = icon("plus"))),
+      box(width = 4, actionButton("minus", label = "减少赞", icon = icon("minus")))
+    )
+  )
+)
+server<-function(input, output) {
+  count_thumbs <- reactive({
+    comprehensive <- input$addtion - input$minus
+    if(comprehensive > 0) {
+      positive <- comprehensive 
+      negative <- 0
+    } else {
+      positive <- 0
+      negative <- comprehensive
+    }
+    thumbs_bind <- c(positive, negative)
+  })
+  output$progressBox <- renderInfoBox({
+    infoBox(
+      title = "变化", value = paste0(25, "%"), 
+      icon = icon("list"), color = "purple")
+  })
+  output$approvalBox <- renderInfoBox({
+    infoBox(
+      title = "赞同", value = 25 + count_thumbs()[1], 
+      icon = icon("thumbs-up"), color = "yellow")
+  })
+  output$progressBox2 <- renderInfoBox({
+    infoBox(
+      title = "变化", value = paste0(25, "%"), 
+      icon = icon("list"),color = "purple", fill = TRUE)
+  })
+  output$approvalBox2 <- renderInfoBox({
+    infoBox(
+      title = "不赞同", value = 25 - count_thumbs()[2], 
+      icon = icon("thumbs-down"), color = "yellow", fill = TRUE)
+  })
+}
+shinyApp(ui,server)
