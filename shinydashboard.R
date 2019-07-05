@@ -323,3 +323,52 @@ server<-function(input, output) {
   })
 }
 shinyApp(ui,server)
+
+
+
+
+# box,renderPlot
+ui<-dashboardPage(
+  dashboardHeader(title = "对象框"),
+  dashboardSidebar(disable = FALSE), #不需要侧边栏
+  dashboardBody(
+    fluidRow(
+      box(plotOutput("gplot_1"), title = textOutput("text_1"), 
+          width = 8, status = "primary", solidHeader = TRUE, 
+          collapsible = TRUE, background = "fuchsia"), # 最小化按钮，洋红色背景
+      box(width = 4, background = "lime", # 黄绿色背景
+          "随便打的文本", # 直接插入文本
+          br(), 
+          sliderInput("slider", "请输入观测值数量：", 50, 500, 200), 
+          textInput("text_1", "请输入标题：", value = "我是标题"),
+          textInput("text_2", "输入横轴名称：", value = "我是x轴"), 
+          textInput("text_3", "输入纵轴名称：", value = "我是y轴"), 
+          submitButton("提交")) #ggplot2运算复杂，需增加提交按钮
+    )
+  )
+)
+library(ggplot2)
+library(RColorBrewer)
+#library(showtext)
+server<-function(input, output) {
+  datainput <- reactive({
+    data.frame(abc = sample(LETTERS[1:7], size = input$slider, replace = TRUE), 
+               stringsAsFactors = F)
+  })
+  output$gplot_1 <- renderPlot({ 
+    #showtext_auto()
+    ggplot(data = datainput()) + # 注意datainput()括号不能少
+      geom_bar(aes(abc, fill = abc)) +
+      scale_fill_brewer(palette = "Set2") + 
+      labs(title = input$text_1, x = input$text_2, y = input$text_3) + 
+      theme_void() + #ggplot2的内置主题之一
+      theme(
+        plot.title = element_text(colour = "magenta", hjust = 0.5, size = 30),
+        axis.title.x = element_text(colour = "blue", hjust = 0.5, size = 20),
+        axis.title.y = element_text(colour = "blue", hjust = 0.5, angle = 90, size = 20),
+        axis.text = element_text(colour = "black", size = 10)
+      )
+  })
+  
+}
+shinyApp(ui,server)
