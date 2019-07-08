@@ -840,3 +840,94 @@ ui<-fluidPage(
 server<-function(input, output) {
 }
 shinyApp(ui,server) 
+
+
+
+
+# tags
+ui<-fluidPage(
+  mainPanel(
+    tags$ul(
+      tags$li("第1个项目"),
+      tags$li("第2个项目"),
+      tags$li("第3个项目")
+    )
+  )
+)
+server<-function(input, output) {
+}
+shinyApp(ui,server) 
+ui<-fluidPage(
+  mainPanel(
+    tags$blockquote("没想到你个浓眉大眼的，也叛变了革命", cite = "鲁迅")
+  )
+)
+shinyApp(ui,server)
+
+
+
+
+# 图像,音乐,视频
+ui<-fluidPage(
+  mainPanel(
+    img(src = "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/R_logo.svg/2000px-R_logo.svg.png", 
+        height = "200px", width = "200px", align = "center"),
+    br(),
+    img(src = "https://i.stack.imgur.com/eddZp.png", 
+        height = "400px", width = "600px", align = "right", 
+        alt = "图像显示不出来就显示该文本")
+  )
+)
+shinyApp(ui,server)#只能在浏览器中打开
+ui<-fluidPage(
+  mainPanel(
+    strong("一期一会，网易云音乐外链"),
+    br(),
+    tags$iframe(src="https://music.163.com/outchain/player?type=2&id=479850552&auto=0&height=66",
+                height = 80, width = 400, scrolling = "no", #框架内是否显示滚动条(yes,no,auto)
+                seamless = FALSE)#是否需要框架看起来像是网页的一部分
+  )
+)
+shinyApp(ui,server)#只能在浏览器中打开
+ui<-fluidPage(
+  mainPanel(
+    strong("Because of you，临时外链，可能失效"),
+    br(),
+    # 后缀为音频后缀格式,使用audio函数
+    tags$audio(src = "http://other.web.nc01.sycdn.kuwo.cn/resource/n3/95/92/2685144667.mp3", 
+               type = "audio/mp3", autoplay = FALSE, controls = TRUE),
+    br(),
+    strong("一期一会----周深， 网盘永久外链"),
+    br(),
+    # 后缀不是音频格式，使用
+    tags$iframe(src = "https://www.opendrive.com/player/NDVfOTY5NTY5Ml9BN1ZCbg", 
+                height = 25, width = 297, scrolling = "no", seamless = FALSE),
+    br(),
+    strong("一期一会，网易云音乐外链"),
+    br(),
+    tags$iframe(src="https://music.163.com/outchain/player?type=2&id=479850552&auto=0&height=66",
+                height = 80, width = 400, scrolling = "no", seamless = FALSE)
+  )
+)
+shinyApp(ui,server)#只能在浏览器中打开
+ui<-fluidPage(
+  mainPanel(
+    strong("Katy Perry MV，框架插入，临时外链，可能失效"),
+    br(),
+    tags$iframe(src = "https://vd.yinyuetai.com/he.yinyuetai.com/uploads/videos/common/EFC90168F02CAF3035BF1A310EBBAD7C.mp4",
+                height = 400, width = 710, scrolling = "no", seamless = FALSE),
+    br(),
+    strong("Katy Perry MV，video函数插入，临时外链，可能失效"),
+    br(),
+    tags$video(src = "https://vd.yinyuetai.com/he.yinyuetai.com/uploads/videos/common/EFC90168F02CAF3035BF1A310EBBAD7C.mp4",
+               type = "video/mp4", autoplay = FALSE, controls = TRUE),
+    br(),
+    strong("Katy Perry MV，框架插入，网盘外链，永久有效"),
+    br(),
+    tags$iframe(src = "https://www.opendrive.com/player/NDVfOTcwMjEwNl9oeFdlbQ",
+                height = 400, width = 710, scrolling = "no", seamless = FALSE)    
+  )
+)
+server<-function(input, output) {
+}
+shinyApp(ui,server) 
