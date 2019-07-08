@@ -763,3 +763,31 @@ server<-function(input, output) {
   })
 }
 shinyApp(ui,server)
+
+
+
+# dashboardPage
+ui<- dashboardPage(skin = "green",
+                   dashboardHeader(title = "我是一个long-long-long-long-long-long-long标题", 
+                                   titleWidth = 500),
+                   dashboardSidebar(disable = FALSE), 
+                   dashboardBody(
+                     fluidRow(
+                       infoBox(title = "定单", value = 10 * 2, icon = icon("credit-card")),
+                       infoBoxOutput("progressBox"),
+                       infoBoxOutput("approvalBox")
+                     ),
+                     fluidRow(
+                       infoBox(title = "定单", value = 10 * 2, 
+                               icon = icon("credit-card"), fill = TRUE),
+                       infoBoxOutput("progressBox2"),
+                       infoBoxOutput("approvalBox2")
+                     ),
+                     
+                     fluidRow(
+                       box(width = 4, actionButton("addtion", label = "增加赞", icon = icon("plus"))),
+                       box(width = 4, actionButton("minus", label = "减少赞", icon = icon("minus")))
+                     )
+                   )
+)
+shinyApp(ui,server) 
