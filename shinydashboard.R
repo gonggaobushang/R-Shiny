@@ -791,3 +791,52 @@ ui<- dashboardPage(skin = "green",
                    )
 )
 shinyApp(ui,server) 
+
+
+
+# 文字
+ui<-fluidPage(
+  mainPanel(
+    h1("一级标题, 水平居中", align = "center"), 
+    h2("二级标题, 左对齐", align = "left"),
+    h3("三级标题，右对齐", align = "right"),
+    h4("四级标题，水平居中，因为我指定了参数align = center,center需要加双引号", 
+       align = "center"),
+    h5("五级标题"),
+    h6("六级标题"),
+    p("使用函数p插入一段文字"),
+    strong("使用stong函数插入粗体文字"),
+    em("使用em函数插入斜体文字"),
+    hr(style = "color:red"),
+    code("this is a code box, created by code function"),
+    div(paste("div函数插入一段风格统一的文字，这段文字是蓝色的",
+              "因为我在div内设定了参数`style = color:blue`", sep = ""),
+        style = "color:blue"),
+    hr(style = "color:black"),# 插入一条红色水平线
+    br(),
+    p("span函数用于p内，可以插入风格不一样的文字，通过指定style参数", 
+      span("我在span函数内，我的风格不一样,我是红色的", style = "color:red"), 
+      "我在p内，在span后面，我的颜色与span前面一样"), 
+    br(),
+    pre("我用  pre函数  执行,  没有  空格压缩,  我指定了  宽度参数  width=67", 
+        width = 40),
+    p("我用  p函数  执行,  存在  空格压缩, "),
+    br(),
+    a(href = "https://www.baidu.com/", # 前面需要加https://,否在为打开子网页
+      target = "_blank", #target参数表示点击后，超链接的相应方式，_blank表示默认打开新标签页
+      "我是超链接，a创建，百度一下"),
+    br(), 
+    HTML(paste("<p><font color = '#FF00FF' font size = '5' font face = 'Comic sans MS'>",
+               "我是紫色的5号Comic sans MS字体，用HTML函数插入",
+               "</font>",
+               "<br />", # 插入换行符
+               "<font color = 'red'>",
+               "我是红色的，用HTML插入",
+               "</font><p>"), sep = ""),
+    br(),
+    span("我是蓝色粗体字", style = "color:green;font-weight:bold") # 分号隔开
+  )
+)
+server<-function(input, output) {
+}
+shinyApp(ui,server) 
