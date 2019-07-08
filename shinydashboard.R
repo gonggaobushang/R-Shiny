@@ -651,3 +651,115 @@ ui<-dashboardPage(
 )
 server<-function(input, output) {}
 shinyApp(ui,server)
+
+
+
+
+#menuItem
+sidebar <- dashboardSidebar(
+  sidebarMenu(
+    menuItem(text = "绘图",  
+             tabName = "someplots", 
+             icon = icon("images")),
+    menuItem(text = "箱子", 
+             tabName = "someboxes", 
+             icon = icon("boxes"), 
+             badgeLabel = "新!", badgeColor = "green"),  
+    menuItem(text = "百度一下", icon = icon("search"), href = "https://www.baidu.com/")
+  )
+)
+
+tab1 <- fluidRow(
+  box(plotOutput("gplot_1"), width = 8),
+  box(width = 4,
+      "随便打的文本", 
+      br(), 
+      "随便码的文字", 
+      sliderInput("slider", "请输入观测值数量：", 50, 500, 200),
+      textInput("text_1", "请输入标题：", value = "我是标题"),
+      textInput("text_2", "输入横轴名称：", value = "我是x轴"), 
+      textInput("text_3", "输入纵轴名称：", value = "我是y轴"),
+      submitButton("提交")) 
+)
+tab2_1 <-  fluidRow(
+  infoBox(title = "定单", value = 10 * 2, icon = icon("credit-card")),
+  infoBoxOutput("progressBox"),
+  infoBoxOutput("approvalBox")
+)
+tab2_2 <- fluidRow( 
+  infoBox(title = "定单", value = 10 * 2, 
+          icon = icon("credit-card"), fill = TRUE),
+  infoBoxOutput("progressBox2"),
+  infoBoxOutput("approvalBox2")
+)
+tab2_3 <- fluidRow( 
+  box(width = 4, actionButton("addtion", label = "增加赞", icon = icon("plus"))),
+  box(width = 4, actionButton("minus", label = "减少赞", icon = icon("minus")))
+)
+body <- dashboardBody(
+  tabItems(
+    tabItem(tabName = "someplots", 
+            tab1), 
+    tabItem(tabName = "someboxes", 
+            h2("随便码几个字"), br(), tab2_1, tab2_2, tab2_3) 
+  )
+)
+
+ui<-dashboardPage(
+  dashboardHeader(title = "选项卡"),
+  sidebar,
+  body
+)
+library(ggplot2)
+library(RColorBrewer)
+server<-function(input, output) {
+  datainput <- reactive({
+    data.frame(abc = sample(LETTERS[1:7], size = input$slider, replace = TRUE), 
+               stringsAsFactors = F)
+  })
+  count_thumbs <- reactive({
+    comprehensive <- input$addtion - input$minus
+    if(comprehensive > 0) {
+      positive <- comprehensive 
+      negative <- 0
+    } else {
+      positive <- 0
+      negative <- comprehensive
+    }
+    thumbs_bind <- c(positive, negative)
+  })
+  output$gplot_1 <- renderPlot({ 
+    ggplot(data = datainput()) + 
+      geom_bar(aes(abc, fill = abc)) +
+      scale_fill_brewer(palette = "Set2") + 
+      labs(title = input$text_1, x = input$text_2, y = input$text_3) + 
+      theme_void() + 
+      theme(
+        plot.title = element_text(colour = "magenta", hjust = 0.5, size = 30),
+        axis.title.x = element_text(colour = "blue", hjust = 0.5, size = 20),
+        axis.title.y = element_text(colour = "blue", hjust = 0.5, angle = 90, size = 20),
+        axis.text = element_text(colour = "black", size = 10)
+      )
+  })
+  output$progressBox <- renderInfoBox({
+    infoBox(
+      title = "变化", value = paste0(25, "%"), 
+      icon = icon("list"), color = "purple")
+  })
+  output$approvalBox <- renderInfoBox({
+    infoBox(
+      title = "赞同", value = 25 + count_thumbs()[1], 
+      icon = icon("thumbs-up"), color = "yellow")
+  })
+  output$progressBox2 <- renderInfoBox({
+    infoBox(
+      title = "变化", value = paste0(25, "%"), 
+      icon = icon("list"),color = "purple", fill = TRUE)
+  })
+  output$approvalBox2 <- renderInfoBox({
+    infoBox(
+      title = "不赞同", value = 25 - count_thumbs()[2], 
+      icon = icon("thumbs-down"), color = "yellow", fill = TRUE)
+  })
+}
+shinyApp(ui,server)
