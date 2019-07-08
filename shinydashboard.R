@@ -511,3 +511,39 @@ server<-function(input, output) {
   })
 }
 shinyApp(ui,server)
+
+
+
+# fluidRow,body
+body <- dashboardBody(
+  fluidRow(
+    box(title = "第1行第1个", "随便码几个字"),
+    box(title = "第1行第2个", status = "warning", "warning状态")),
+  fluidRow(
+    box(         #一行共12
+      title = "第2行第1个", width = 3, solidHeader = TRUE, #自动高
+      status = "primary", "primary状态", br(), "宽3"),
+    box(
+      title = "第2行第2个", width = 4, solidHeader = TRUE,
+      "随便码几个字", br(), "宽4"),
+    box(
+      title = "第2行第3个", width = 5, solidHeader = TRUE, 
+      status = "warning", "warning状态", br(), "宽5")),
+  fluidRow(
+    box(
+      title = "第3行第1个", width = 5, height = 400, 
+      background = "black","黑色背景", br(), "宽5"),
+    box(
+      title = "第3行第2个", width = 4, height = 400, 
+      background = "light-blue","浅蓝色背景", br(), "宽4"),
+    box(
+      title = "第3行第3个", width = 3, height = 400, 
+      background = "maroon", "栗色背景", br(), "宽3"))
+)
+ui<-dashboardPage(
+  dashboardHeader(title = "多行布局"),
+  dashboardSidebar(disable = TRUE),
+  dashboardBody(body)
+)
+server<-function(input, output) {}
+shinyApp(ui,server)
