@@ -547,3 +547,49 @@ ui<-dashboardPage(
 )
 server<-function(input, output) {}
 shinyApp(ui,server)
+
+
+
+# column
+body <- dashboardBody(
+  fluidRow(
+    column(width = 3,
+           box(
+             title = "第1列第1个", width = NULL, height = 200, 
+             #必须width = NULL, 因为默认为6但是column已经定义了3
+             status = "primary","primary状态", br(), "高200"),
+           box(
+             title = "第1列第2个", width = NULL, height = 100, solidHeader = TRUE, 
+             status = "primary", "primary状态", br(), "高100"),
+           box(
+             title = "第1列第3个",width = NULL, height = 300, 
+             background = "black", "背景颜色：black", br(), "高300")
+    ),
+    column(width = 4, offset = 2, # offset = 2，跟前一列之间增加间隙2个宽度
+           box(
+             title = "第2列第1个", status = "warning", width = NULL, height = 100, 
+             "warning状态", br(), "高100"),
+           box(
+             title = "第2列第2个", width = NULL, height = 200, solidHeader = TRUE, 
+             status = "warning","warning状态", br(), "高200"),
+           box(
+             title = "第2列第3个", width = NULL, height = 300, 
+             background = "light-blue", "背景颜色：light-blue", br(), "高300")
+    ),
+    column(width = 3,
+           box(
+             title = "第3列第1个", width = NULL, height = 300, solidHeader = TRUE,
+             "随便码几个字", br(), "高300"),
+           box(
+             title = "第3列第2个", width = NULL, height = 200, 
+             background = "maroon", "背景颜色：maroon", br(), "高200")
+    )
+  )
+)
+ui<-dashboardPage(
+  dashboardHeader(title = "多列布局"),
+  dashboardSidebar(disable = TRUE), 
+  dashboardBody(body)
+)
+server<-function(input, output) {}
+shinyApp(ui,server)
