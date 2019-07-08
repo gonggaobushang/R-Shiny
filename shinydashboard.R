@@ -593,3 +593,61 @@ ui<-dashboardPage(
 )
 server<-function(input, output) {}
 shinyApp(ui,server)
+#行列布局
+body <- dashboardBody(
+  fluidRow(
+    box(
+      title = "第1行第1个", width = 6, status = "primary",
+      "primary状态", br(), "宽6"),
+    box(
+      title = "第1行第2个", width = 6, status = "warning", 
+      "warning状态", br(), "宽6")),
+  fluidRow(
+    column(width = 3, 
+           box(
+             title = "第2行第1列第1个", width = NULL, height = 100, 
+             solidHeader = TRUE, status = "primary",
+             "primary状态", br(), "高100"),
+           box(
+             title = "第2行第1列第2个", width = NULL, heigth = 150, 
+             background = "black",
+             "背景颜色：black", br(), "高150"),
+           box(
+             title = "第2行第1列第3个", width = NULL, heigth = 100, 
+             background = "fuchsia",
+             "背景颜色：fuchsia", br(), "高100")),
+    column(width = 4, 
+           box(
+             title = "第2行第2列第1个", width = NULL, height = 150,
+             solidHeader = TRUE, status = "warning",
+             "warning状态", br(), "高150"),
+           box(
+             title = "第2行第2列第2个", width = NULL, height = 200, 
+             background = "light-blue",
+             "背景颜色：light-blue", br(), "高200")),
+    column(width = 5,
+           box(
+             title = "第2行第3列第1个", width = NULL, height = 300, 
+             solidHeader = TRUE,
+             "高度300"),
+           box(
+             title = "第2行第3列第2个", width = NULL, height = 200,
+             background = "maroon",
+             "背景颜色：maroon", br(), "高200")),
+    fluidRow(
+      box(
+        title = "第3行第1个", width = 4, status = "primary",
+        "primary状态", br(), "宽4"),
+      box(
+        title = "第3行第2个", width = 8, status = "warning", 
+        "warning状态", br(), "宽8"))
+  )
+)
+
+ui<-dashboardPage(
+  dashboardHeader(title = "混合布局"),
+  dashboardSidebar(disable = TRUE), # 
+  dashboardBody(body)
+)
+server<-function(input, output) {}
+shinyApp(ui,server)
