@@ -18,3 +18,6 @@
 
 ## shinycssloaders.R
 缓冲动画。
+
+## shinyjqui.R
+可拖动的输出。
