@@ -15,3 +15,6 @@
 
 ## shinyBS.R
 警报、提示按钮、展开面板、提示框、创建窗口。
+
+## shinycssloaders.R
+缓冲动画。
