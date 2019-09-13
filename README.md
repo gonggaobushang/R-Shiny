@@ -11,3 +11,7 @@
 包括视频、音乐、图像、交互式文本框、plotly等。
 ### 存在一些小问题。
 网址:  https://xujie.shinyapps.io/financial/
+
+
+## shinyBS.R
+警报、提示按钮、展开面板、提示框、创建窗口。
