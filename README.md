@@ -21,3 +21,6 @@
 
 ## shinyjqui.R
 可拖动的输出。
+
+## sparkline.R
+将sparkline（一种小交互式图）嵌进shiny。
