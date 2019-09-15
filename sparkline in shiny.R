@@ -1,6 +1,6 @@
 library(dplyr)
 library(htmltools)
-library(formattable)
+#library(formattable)
 library(shinydashboard)
 library(sparkline)
 library(shiny)
