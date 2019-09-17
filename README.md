@@ -24,3 +24,6 @@
 
 ## sparkline.R
 将sparkline（一种小交互式图）嵌进shiny。
+
+## DT in shiny.R
+在shiny中展现DT表格，包括呈现中文、增加功能按钮等。
